@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Function Response</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 80px auto 20px; /* Adjusted margin to accommodate fixed header */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 20px 0; /* Increased margin */
+            padding: 20px; /* Increased padding */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        li a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome To Your Space</h1>
+    </header>
+
+    <main>
+        <ul id="blobUrlsList"></ul>
+    </main>
+
+    <script>
+        const azureFunctionUrl = "https://tupdfconversionabhi.azurewebsites.net/api/GetBlobUrls?";
+
+        fetch(azureFunctionUrl, { mode: 'cors' })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(blobUrls => {
+                const blobUrlsList = document.getElementById("blobUrlsList");
+
+                blobUrls.forEach(url => {
+                    const listItem = document.createElement("li");
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.target = "_blank";
+                    link.textContent = url;
+                    listItem.appendChild(link);
+                    blobUrlsList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+                const errorMessage = document.createElement("p");
+                errorMessage.textContent = "Error fetching data. Please try again later.";
+                document.body.appendChild(errorMessage);
+            });
+    </script>
+</body>
+</html>
